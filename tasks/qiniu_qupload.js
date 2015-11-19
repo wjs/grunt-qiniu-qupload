@@ -102,6 +102,7 @@ module.exports = function(grunt) {
 
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
+      cwd: '.',
       ak: null,
       sk: null,
       bucket: null,
@@ -116,9 +117,9 @@ module.exports = function(grunt) {
       qiniu.conf.ACCESS_KEY = options.ak;
       qiniu.conf.SECRET_KEY = options.sk;
 
-      if (options.bucket && options.assets && Array.isArray(options.assets)) {
+      if (options.cwd && options.bucket && options.assets && Array.isArray(options.assets)) {
         for (var i = options.assets.length - 1; i >= 0; i--) {
-          uploadFileOrDir(path.resolve(__dirname, '../', options.assets[i].src), options.bucket, options.assets[i].prefix, options.overwrite);
+          uploadFileOrDir(path.resolve(options.cwd, options.assets[i].src), options.bucket, options.assets[i].prefix, options.overwrite);
         }
       }
     }

@@ -32,6 +32,7 @@ module.exports = function(grunt) {
     qiniu_qupload: {
       default_options: {
         options: {
+          cwd: '.',
           ak: '<Your AccessKey>',
           sk: '<Your SecretKey>',
           bucket: '<Bucket>',
