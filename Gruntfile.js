@@ -37,10 +37,10 @@ module.exports = function(grunt) {
           bucket: '<Bucket>',
           overwrite: true,
           assets: [{
-            src: '/upload/assets/css',
+            src: 'test/upload/assets/css',
             prefix: 'assets/css/'
           },{
-            src: '/upload/assets/js',
+            src: 'test/upload/assets/js',
             prefix: 'assets/js/'
           }]
         }
