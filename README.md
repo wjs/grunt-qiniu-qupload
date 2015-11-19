@@ -46,6 +46,12 @@ grunt.initConfig({
 
 ### Options
 
+#### options.cwd
+Type: `String`
+Default value: `'.'`
+
+current working directory, use to resolve assets path.
+
 #### options.ak
 Type: `String`
 Default value: `null`
@@ -74,7 +80,7 @@ if overwrite existing files.
 Type: `Array`
 Default value: `null`
 
-your assets. elements in the array must be in struct like `{src: '<local assets Dir>', prefix: <Key Prefix>}`.
+your assets. elements in the array must be in struct like `{src: '<local assets Dir>', prefix: <Key Prefix>}`, and `options.cwd + '<local assets Dir>'` must be an existing assets directory.
 
 ### Usage Examples
 
