@@ -50,7 +50,7 @@ module.exports = function(grunt) {
       this.checkCrc = checkCrc || 0;
     }
 
-    function uploadFile(localFile, bucketName, prefix, overwrite) {
+    function uploadFile(localFile, prefix, options) {
       var extra = new qiniu.io.PutExtra();
       //extra.params = params;
       //extra.mimeType = mimeType;
@@ -58,19 +58,22 @@ module.exports = function(grunt) {
       //extra.checkCrc = checkCrc;
 
       var key = prefix + path.basename(localFile);
-      if (overwrite) {
+      if (options.overwrite || options.removeExistOnly) {
         var client = new qiniu.rs.Client();
-        client.remove(bucketName, key, function(err, ret) {
+        client.remove(options.bucket, key, function(err, ret) {
           if (!err) {
             // ok
-            console.log('overwrite mode, delete old file success! >>> ', key);
+            console.log('Delete old file success! >>> ', key);
           } else {
-            console.log('overwrite mode, delete old file error! >>> ', err);
+            console.log('Delete old file error! >>> ', key, err);
             // http://developer.qiniu.com/docs/v6/api/reference/codes.html
           }
         });
+        if (options.removeExistOnly) {
+          return;
+        }
       }
-      qiniu.io.putFile(uptoken(bucketName), key, localFile, extra, function(err, ret) {
+      qiniu.io.putFile(uptoken(options.bucket), key, localFile, extra, function(err, ret) {
         if (!err) {
           // 上传成功， 处理返回值
           console.log('upload success! >>> ', ret.key);
@@ -83,13 +86,15 @@ module.exports = function(grunt) {
       });
     }
 
-    function uploadFileOrDir(filePath, bucketName, prefix, overwrite) {
+    function uploadFileOrDir(filePath, prefix, skip, options) {
       if (grunt.file.exists(filePath)) {
         if (grunt.file.isFile(filePath)) {
-          uploadFile(filePath, bucketName, prefix, overwrite);
+          uploadFile(filePath, prefix, options);
         } else if (grunt.file.isDir(filePath)) {
           grunt.file.recurse(filePath, function(abspath, rootdir, subdir, filename) {
-            uploadFile(abspath, bucketName, prefix, overwrite);
+            if (skip && skip.indexOf(filename) > -1) {} else {
+              uploadFile(abspath, prefix, options);
+            }
           });
         } else {
           console.error('[ERROR] >>> ', filePath, 'is not a file or directory!');
@@ -106,6 +111,7 @@ module.exports = function(grunt) {
       ak: null,
       sk: null,
       bucket: null,
+      removeExistOnly: false,
       overwrite: false,
       assets: null
     });
@@ -119,7 +125,7 @@ module.exports = function(grunt) {
 
       if (options.cwd && options.bucket && options.assets && Array.isArray(options.assets)) {
         for (var i = options.assets.length - 1; i >= 0; i--) {
-          uploadFileOrDir(path.resolve(options.cwd, options.assets[i].src), options.bucket, options.assets[i].prefix, options.overwrite);
+          uploadFileOrDir(path.resolve(options.cwd, options.assets[i].src), options.assets[i].prefix, options.assets[i].skip, options);
         }
       }
     }

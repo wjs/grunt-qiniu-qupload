@@ -27,13 +27,15 @@ grunt.initConfig({
   qiniu_qupload: {
     default_options: {
       options: {
-        ak: '<Your AccessKey>',
-        sk: '<Your SecretKey>',
-        bucket: '<Bucket>',
-        overwrite: true,
-        assets: [{
-          src: 'test/upload/assets/css',
-          prefix: 'assets/css/'
+        ak: '<Your AccessKey>',           // required, default null
+        sk: '<Your SecretKey>',           // required, default null
+        bucket: '<Bucket>',               // required, default null
+        removeExistOnly: false,           // optional, default false
+        overwrite: true,                  // optional, default false
+        assets: [{                        // required, default null
+          src: 'test/upload/assets/css',  // required
+          prefix: 'assets/css/',          // required, use '' when no prefix
+          // skip: ['b.css'],             // optional, default undefined
         },{
           src: 'test/upload/assets/js',
           prefix: 'assets/js/'
@@ -70,6 +72,12 @@ Default value: `null`
 
 qiniu bucket where you want to upload your file.
 
+#### options.removeExistOnly
+Type: `Boolean`
+Default value: `false`
+
+remove existing files without upload files. (Notice: files in `<skip list>` will not be affect.)
+
 #### options.overwrite
 Type: `Boolean`
 Default value: `false`
@@ -80,7 +88,7 @@ if overwrite existing files.
 Type: `Array`
 Default value: `null`
 
-your assets. elements in the array must be in struct like `{src: '<local assets Dir>', prefix: <Key Prefix>}`, and `options.cwd + '<local assets Dir>'` must be an existing assets directory.
+your assets. elements in the array must be in struct like `{src: '<local assets Dir>', prefix: <Key Prefix>, skip: [<skip files list>]}`, and `options.cwd + '<local assets Dir>'` must be an existing assets directory. skip is an optional setting, skip files must in the `src` directory. files in skip list will not affect by any operation.
 
 ### Usage Examples
 
@@ -91,13 +99,15 @@ grunt.initConfig({
   qiniu_qupload: {
     default_options: {
       options: {
-        ak: '<Your AccessKey>',
-        sk: '<Your SecretKey>',
-        bucket: '<Bucket>',
-        overwrite: true,
-        assets: [{
-          src: 'test/upload/assets/css',
-          prefix: 'assets/css/'
+        ak: '<Your AccessKey>',           // required, default null
+        sk: '<Your SecretKey>',           // required, default null
+        bucket: '<Bucket>',               // required, default null
+        removeExistOnly: false,           // optional, default false
+        overwrite: true,                  // optional, default false
+        assets: [{                        // required, default null
+          src: 'test/upload/assets/css',  // required
+          prefix: 'assets/css/',          // required, use '' when no prefix
+          // skip: ['b.css'],             // optional, default undefined
         },{
           src: 'test/upload/assets/js',
           prefix: 'assets/js/'

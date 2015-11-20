@@ -36,10 +36,12 @@ module.exports = function(grunt) {
           ak: '<Your AccessKey>',
           sk: '<Your SecretKey>',
           bucket: '<Bucket>',
+          removeExistOnly: false,
           overwrite: true,
           assets: [{
             src: 'test/upload/assets/css',
-            prefix: 'assets/css/'
+            prefix: 'assets/css/',
+            // skip: ['b.css']
           },{
             src: 'test/upload/assets/js',
             prefix: 'assets/js/'
