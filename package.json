@@ -1,7 +1,7 @@
 {
   "name": "grunt-qiniu-qupload",
   "description": "a grunt plugin which can upload assets to qiniu.",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "homepage": "https://github.com/wjs/grunt-qiniu-qupload",
   "author": {
     "name": "wjs",
