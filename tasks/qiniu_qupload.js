@@ -20,44 +20,12 @@ module.exports = function(grunt) {
 
   grunt.registerMultiTask('qiniu_qupload', 'a grunt plugin which can upload assets to qiniu.', function() {
 
-    function PutPolicy(scope, callbackUrl, callbackBody, returnUrl, returnBody, asyncOps, endUser, expires) {
-      this.scope = scope || null;
-      this.callbackUrl = callbackUrl || null;
-      this.callbackBody = callbackBody || null;
-      this.returnUrl = returnUrl || null;
-      this.returnBody = returnBody || null;
-      this.asyncOps = asyncOps || null;
-      this.endUser = endUser || null;
-      this.expires = expires || 3600;
-    }
-
-    function uptoken(bucketname) {
-      var putPolicy = new qiniu.rs.PutPolicy(bucketname);
-      //putPolicy.callbackUrl = callbackUrl;
-      //putPolicy.callbackBody = callbackBody;
-      //putPolicy.returnUrl = returnUrl;
-      //putPolicy.returnBody = returnBody;
-      //putPolicy.asyncOps = asyncOps;
-      //putPolicy.expires = expires;
-
-      return putPolicy.token();
-    }
-
-    function PutExtra(params, mimeType, crc32, checkCrc) {
-      this.paras = params || {};
-      this.mimeType = mimeType || null;
-      this.crc32 = crc32 || null;
-      this.checkCrc = checkCrc || 0;
-    }
-
     function uploadFile(localFile, prefix, options) {
-      var extra = new qiniu.io.PutExtra();
-      //extra.params = params;
-      //extra.mimeType = mimeType;
-      //extra.crc32 = crc32;
-      //extra.checkCrc = checkCrc;
 
+      var uptoken = (new qiniu.rs.PutPolicy(options.bucket)).token();
       var key = prefix + path.basename(localFile);
+      var extra = new qiniu.io.PutExtra();
+
       if (options.overwrite || options.removeExistOnly) {
         var client = new qiniu.rs.Client();
         client.remove(options.bucket, key, function(err, ret) {
@@ -73,7 +41,8 @@ module.exports = function(grunt) {
           return;
         }
       }
-      qiniu.io.putFile(uptoken(options.bucket), key, localFile, extra, function(err, ret) {
+
+      qiniu.io.putFile(uptoken, key, localFile, extra, function(err, ret) {
         if (!err) {
           // 上传成功， 处理返回值
           console.log('upload success! >>> ', ret.key);
@@ -84,6 +53,7 @@ module.exports = function(grunt) {
           // http://developer.qiniu.com/docs/v6/api/reference/codes.html
         }
       });
+
     }
 
     function uploadFileOrDir(filePath, prefix, skip, options) {
